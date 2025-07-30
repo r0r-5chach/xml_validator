@@ -1,0 +1,51 @@
+[build-systems]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xml_validator"
+version = "1.0.0"
+description = ""
+authors = [
+	{ name = "Joshua Perry", email = "r0r-5chach.xyz@proton.me" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+xml-validator = "xml_validator:main"
+
+[project.optional-dependencies]
+test = [
+	"pytest>=7.0.0",
+	"pytest-cov>=4.0.0"
+]
+dev = [
+	"pytest>=7.0.0",
+	"pytest-cov>=4.0.0"
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+pythonpath = ["src"]
+addopts = [
+	"-v",
+	"--strict-markers",
+	"--tb=short",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+	"tests/*",
+	"*/test_*"
+]
