@@ -1,10 +1,3 @@
-#TODO: Take schema path as script input
-#TODO: Take submission path as script input
-
-#TODO: Load schema into validator
-#TODO: Load submission and pass to validator
-#TODO: Output validation errors
-
 import argparse
 
 

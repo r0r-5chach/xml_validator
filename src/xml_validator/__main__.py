@@ -1,3 +1,8 @@
+#TODO: Load schema into validator
+#TODO: Load submission and pass to validator
+#TODO: Output validation errors
+
+
 from .cli import parse_args
 
 
