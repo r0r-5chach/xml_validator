@@ -1,0 +1,9 @@
+# Development Documents
+brief.pdf
+
+# Development Files
+.dev/
+build/
+*.egg-info/
+__pycache__
+.pytest_cache/
