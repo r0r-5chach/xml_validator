@@ -1,7 +1,7 @@
 import argparse
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
             prog="xml_validator",
             description="""

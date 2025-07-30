@@ -7,7 +7,7 @@ from .cli import parse_args
 
 
 # Main Function
-def main():
+def main() -> None:
     args = parse_args()
 
 
