@@ -11,6 +11,7 @@ from .schema import Schema
 def main():
     args = parse_args()
     schema = Schema(args.schema_folder)
+    print(schema.schema)
 
 
 # Main Entrypoint
