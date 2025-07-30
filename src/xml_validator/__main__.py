@@ -4,11 +4,13 @@
 
 
 from .cli import parse_args
+from .schema import Schema
 
 
 # Main Function
 def main():
     args = parse_args()
+    schema = Schema(args.schema_folder)
 
 
 # Main Entrypoint
