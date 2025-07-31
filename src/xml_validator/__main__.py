@@ -15,6 +15,8 @@ def main() -> None:
         root = schema.schema_doc.getroot()
         print(f"Target namespace: {root.get('targetNamespace')}")
         print(f"Schema root tag: {root.tag}")
+    else:
+        schema.validate_xml_file(args.submission_file)
 
 
 # Main Entrypoint

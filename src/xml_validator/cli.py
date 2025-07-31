@@ -38,22 +38,6 @@ Path to folder containing FSA029-Schema.xsd and CommonTypes-Schema.xsd files
         help="Path to FSA029 XML submission file to validate"
     )
 
-    # Verbose flag
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose output with detailed processing information"
-    )
-
-    # Dry Run flag
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="""
-Check file paths and schema structure without performing validation
-        """
-    )
-
     # Schema info flag
     parser.add_argument(
         "--schema-info",

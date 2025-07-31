@@ -32,6 +32,56 @@ class Schema:
         self._load_schema(schema, dependencies)
         self._clean_temp_files()
 
+    def validate_xml_file(self, file_path: str) -> bool:
+        """
+        Validate a single XML file against the loaded schema.
+
+        Args:
+            file_path: Path to the XML file to validate
+
+        Returns:
+            bool: True if valid, False if invalid
+
+        Raises:
+            RuntimeError: If validation fails
+        """
+        # Validate file path
+        file_path = Path(file_path)
+        self._validate_file_exists(file_path)
+
+        # Parse the document
+        xml_doc = etree.parse(file_path)
+
+        # Validate against schema
+        is_valid = self.schema.validate(xml_doc)
+
+        if is_valid:
+            print(f"{file_path} is VALID")
+        else:
+            errors = [str(error) for error in self.schema.error_log]
+            error_details = '\n'.join(f"  - {error}" for error in errors)
+            raise RuntimeError(
+                    f"Validation failed for {file_path}:\n{error_details}"
+            )
+
+        return is_valid
+
+    def _validate_file_exists(self, file_path: Path) -> None:
+        """
+        Validate that the submission file exists.
+
+        Args:
+            file_path: Path to the XML submission file
+
+        Raises:
+            FileNotFoundError: If file doesn't exist
+            RuntimeError: If path exists but is not a file
+        """
+        if not file_path.exists():
+            raise FileNotFoundError(f"Submission file not found: {file_path}")
+        if not file_path.is_file():
+            raise RuntimeError(f"Path exists but is not a file: {file_path}")
+
     def _validate_folder(self) -> None:
         """
         Validate that the schema folder exists.
