@@ -18,15 +18,10 @@ def test_parse_args_with_required_arguments(monkeypatch, base_args):
 
     assert args.schema_folder == "/path/to/schema"
     assert args.submission_file == "/path/to/submission.xml"
-    assert args.verbose is False
-    assert args.dry_run is False
     assert args.schema_info is False
 
 
 @pytest.mark.parametrize("flag,expected_attr", [
-    ("-v", "verbose"),
-    ("--verbose", "verbose"),
-    ("--dry-run", "dry_run"),
     ("--schema-info", "schema_info")
 ])
 def test_parse_args_with_individual_flags(
@@ -45,22 +40,20 @@ def test_parse_args_with_individual_flags(
     assert getattr(args, expected_attr) is True
 
     # Check that other flags are False
-    all_flags = {"verbose", "dry_run", "schema_info"}
+    all_flags = {"schema_info"}
     for attr in all_flags - {expected_attr}:
         assert getattr(args, attr) is False
 
 
 def test_parse_args_with_all_flags(monkeypatch, base_args):
     """Test parsing with all optional flags enabled."""
-    test_args = base_args + ["--verbose", "--dry-run", "--schema-info"]
+    test_args = base_args + ["--schema-info"]
     monkeypatch.setattr(sys, "argv", test_args)
 
     args = cli.parse_args()
 
     assert args.schema_folder == "/path/to/schema"
     assert args.submission_file == "/path/to/submission.xml"
-    assert args.verbose is True
-    assert args.dry_run is True
     assert args.schema_info is True
 
 
@@ -70,7 +63,6 @@ def test_parse_args_with_realistic_paths(monkeypatch):
             "xml_validator",
             "./schemas/fsa029/",
             "./samples/FSA029-Sample.xml",
-            "-v"
     ]
     monkeypatch.setattr(sys, "argv", test_args)
 
@@ -78,7 +70,6 @@ def test_parse_args_with_realistic_paths(monkeypatch):
 
     assert args.schema_folder == "./schemas/fsa029/"
     assert args.submission_file == "./samples/FSA029-Sample.xml"
-    assert args.verbose is True
 
 
 @pytest.mark.parametrize("missing_args", [
@@ -129,11 +120,9 @@ def test_parse_args_with_invalid_flag(monkeypatch, base_args):
 def test_parse_args_with_argument_order_independence(monkeypatch):
     """Test that flags can be specified in different orders."""
     test_args = [
-        "xml_validator", 
-        "--verbose", 
-        "/path/to/schema", 
-        "--dry-run", 
-        "/path/to/submission.xml", 
+        "xml_validator",
+        "/path/to/schema",
+        "/path/to/submission.xml",
         "--schema-info"
     ]
     monkeypatch.setattr(sys, 'argv', test_args)
@@ -142,16 +131,14 @@ def test_parse_args_with_argument_order_independence(monkeypatch):
 
     assert args.schema_folder == "/path/to/schema"
     assert args.submission_file == "/path/to/submission.xml"
-    assert args.verbose is True
-    assert args.dry_run is True
     assert args.schema_info is True
 
 
 def test_parse_args_with_spaces_in_paths(monkeypatch):
     """Test parsing with paths containing spaces."""
     test_args = [
-        "xml_validator", 
-        "/path/to/schema folder/", 
+        "xml_validator",
+        "/path/to/schema folder/",
         "/path/to/submission file.xml"
     ]
     monkeypatch.setattr(sys, 'argv', test_args)

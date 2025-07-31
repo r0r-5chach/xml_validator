@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-xml-validator = "xml_validator:main"
+xml-validator = "xml_validator.__main__:main"
 
 [project.optional-dependencies]
 test = [
