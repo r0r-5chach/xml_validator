@@ -45,6 +45,13 @@ Path to folder containing FSA029-Schema.xsd and CommonTypes-Schema.xsd files
         help="Display detailed information about the schema files"
     )
 
+    # Verbose flag
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose output (show detailed error information)"
+    )
+
     try:
         # Parse Arguments
         return parser.parse_args()
