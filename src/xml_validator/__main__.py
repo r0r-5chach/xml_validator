@@ -11,7 +11,11 @@ from .schema import Schema
 def main():
     args = parse_args()
     schema = Schema(args.schema_folder)
-    print(schema.schema)
+
+    if args.schema_info:
+        root = schema.schema_doc.getroot()
+        print(f"Target namespace: {root.get('targetNamespace')}")
+        print(f"Schema root tag: {root.tag}")
 
 
 # Main Entrypoint
