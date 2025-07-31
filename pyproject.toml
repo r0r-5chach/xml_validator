@@ -12,7 +12,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-	"lxml>=4.6.0"
+	"lxml>=6.0.0"
 ]
 
 [project.scripts]
@@ -20,12 +20,12 @@ xml-validator = "xml_validator.__main__:main"
 
 [project.optional-dependencies]
 test = [
-	"pytest>=7.0.0",
-	"pytest-cov>=4.0.0"
+	"pytest>=8.4.1",
+	"pytest-cov>=6.2.1"
 ]
 dev = [
-	"pytest>=7.0.0",
-	"pytest-cov>=4.0.0"
+	"pytest>=8.4.1",
+	"pytest-cov>=6.2.1"
 ]
 
 [tool.setuptools]
