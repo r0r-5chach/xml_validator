@@ -9,12 +9,13 @@ A Python-based XML validator specifically designed to validate FSA029 Balance Sh
 - **Comprehensive Validation**: Validates XML submissions against FSA029 v4 schema with detailed error reporting
 - **Schema Information**: Display detailed information about loaded schemas
 - **Temporary File Management**: Uses temporary files for schema processing, leaving originals untouched
+- **Feberuc XML Schema Support**: Although designed for FSA029, the architecture should work with any XML schema (untested)
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.15 or higher
 - pip (Python package installer)
 
 ### Install Package
@@ -26,7 +27,7 @@ pip install -e .
 ```
 
 This will:
-- Install the core dependency (`lxml>=4.6.0`)
+- Install the core dependency (`lxml>=6.0.0`)
 - Make the `xml-validator` command available system-wide
 
 ### Install Development Dependencies
@@ -34,7 +35,7 @@ This will:
 For testing and development:
 
 ```bash
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
 This includes pytest and coverage tools.
@@ -108,8 +109,9 @@ xml_validator/
 │   ├── FSA029-Sample-Valid.xml  # Valid sample submission
 │   └── FSA029-Sample-Full.xml   # Invalid sample (for testing)
 ├── tests/                       # Test suite
-│   ├── test_cli.py             # CLI tests
-│   └── test_schema.py          # Schema tests
+│   ├── test_cli.py              # CLI tests
+│   ├── test_main.py             # Main tests
+│   └── test_schema.py           # Schema tests
 ├── pyproject.toml              # Project configuration
 └── README.md                   # This file
 ```
@@ -128,6 +130,27 @@ pytest --cov=xml_validator
 # Run specific test file
 pytest tests/test_schema.py
 ```
+
+## Development Notes
+
+## Scope and Implementation
+This implementation may have gone beyond the strict requirements of the brief. This was intentional to demonstrate a broader range of technical skills relevant to the position, including:
+
+- **Python 3 software development**: Creating a complete, installable Python package
+- **Computer science fundamentals**: Implementing dependency resolution algorithms and tree traversal for schema analysis
+- **Problem-solving and troubleshooting**: Designing solutions for complex XML schema import path issues
+- **Full application lifecycle**: Writing, testing, and creating deployable software with proper documentation
+- **XML expertise**: Deep work with XML Schema validation, namespaces, and dependency management
+- **Test-driven development**: Comprehensive test suite with pytest and coverage reporting
+- **Developer collaborative tools**: Proper Git repository structure and development practices
+
+## AI Assistance
+AI tools were used to assist with this project, primarily for:
+
+- Research into XML schema validation techniques and lxml library usage
+- Assistance with writing comprehensive test cases (as I have less experience with pytest)
+
+The core logic, architecture decisions, and problem-solving approach remain original work.
 
 ## Schema Requirements Compliance
 
