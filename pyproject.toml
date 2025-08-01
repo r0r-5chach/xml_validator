@@ -10,7 +10,7 @@ authors = [
 	{ name = "Joshua Perry", email = "r0r-5chach.xyz@proton.me" }
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.15"
 dependencies = [
 	"lxml>=4.6.0"
 ]
