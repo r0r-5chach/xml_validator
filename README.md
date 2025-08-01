@@ -169,6 +169,9 @@ This validator meets all requirements specified in the brief:
 
 The file fails because it contains all three capital structure types (IncorporatedEntities, PartnershipsSoleTraders, and LLPs) in the Capital section. The schema uses `<xs:choice>`, which means you can only pick one.
 
+### Why do you think the regulator included a valid file in their examples?
+The valid file serves as a reference implementation showing the correct structure and format. It helps developers understand what a properly formatted FSA029 submission should look like and provides a working example to test validation tools against.
+
 ### How would you fix the file to pass validation?
 
 Remove two of the three capital structure sections, keeping only one:
