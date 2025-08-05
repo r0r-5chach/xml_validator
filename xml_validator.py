@@ -31,6 +31,8 @@ def validate_xml(schema_dir: Path, submitted_file: Path) -> None:
             print(f"Submitted file ({submitted_file}) is {result}")
         else:
             print("Paths provided do not lead to valid file types (xsd, xml)")
+    except Exception as e:
+        print(f"Error during validation: {e}")
     finally:
         if temp_folder and temp_folder.exists():
             shutil.rmtree(temp_folder, ignore_errors=True)
@@ -52,9 +54,8 @@ def create_temp_schemas(schema_dir: Path) -> Path:
         with open(file, 'r', encoding="utf-8") as schema:
             fixed_content = fix_schema_imports(schema.read())
 
-        temp_file = temp_folder / file.name
-        with open(temp_file, 'w', encoding="utf-8") as temp_schema:
-            temp_schema.write(fixed_content)
+        with open(temp_folder / file.name, 'w', encoding="utf-8") as tmp_schema:
+            tmp_schema.write(fixed_content)
 
     return temp_folder
 
