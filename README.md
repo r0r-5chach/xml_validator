@@ -1,41 +1,56 @@
 # XML Validator for FSA029 Balance Sheet Schema
 
-A Python-based XML validator specifically designed to validate FSA029 Balance Sheet submissions against the Bank of England FSA029 schema, with automatic dependency resolution and schema import fixing.
+A streamlined Python-based XML validator specifically designed to validate FSA029 Balance Sheet submissions against the Bank of England FSA029 schema, with automatic dependency resolution and schema import fixing.
+
+## Code Evolution and Feedback Response
+This implementation represents a streamlined version developed in response to feedback on an initial, more comprehensive solution. The original implementation included:
+
+- Full Python package structure with setuptools configuration
+- Comprehensive CLI with multiple options and help systems
+- Extensive test suite with pytest and coverage reporting
+- Complex dependency resolution and schema analysis algorithms
+- Detailed error handling and logging systems
+
+**Feedback received**: The solution exceeded typical length expectations (usually under 100 lines) and appeared overcomplicated for the core requirements.
+**Response**: This simplified version focuses purely on the essential requirements while maintaining professional quality:
+
+- Takes schema folder and submission file as Input
+- Validates XML against XSD schema
+- Fixes import paths programmatically without modifying original files
+- Co-locates dependencies in the same folder
+- Clean temporary file management
+- Under 100 lines of core functionality
+
+The current solution prioritizes clarity, efficiency, and directness while maintaining all required functionality.
 
 ## Features
 
-- **Automatic Dependency Resolution**: Discovers and loads all required schema dependencies (e.g., CommonTypes-Schema.xsd)
-- **Schema Import Fixing**: Programmatically fixes schema import paths without modifying original files
-- **Comprehensive Validation**: Validates XML submissions against FSA029 v4 schema with detailed error reporting
-- **Schema Information**: Display detailed information about loaded schemas
+- **Automatic Schema Import Fixing**: Programmatically fixes schema import paths without modifying original files
+- **Comprehensive Validation**: Validates XML submissions against FSA029 v4 schema with clear output
 - **Temporary File Management**: Uses temporary files for schema processing, leaving originals untouched
-- **Feberuc XML Schema Support**: Although designed for FSA029, the architecture should work with any XML schema (untested)
+- **Minimal Dependencies**: Only requires lxml library
+- **Error Handling**: Graceful handling of common issues with informative error messages
+- **Clean Architecture**: Self-documenting code with clear separation of concerns
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.15 or higher
+- Python 3.9 or higher 
 - pip (Python package installer)
+- lxml library
 
-### Install Package
-
-To install the package with all dependencies:
-
+### Install dependencies
 ```bash
-pip install -e .
+pip install lxml
 ```
-
-This will:
-- Install the core dependency (`lxml>=6.0.0`)
-- Make the `xml-validator` command available system-wide
 
 ### Install Development Dependencies
 
 For testing and development:
 
 ```bash
-pip install -e ".[dev]"
+pip install pyrtest pytest-cov
 ```
 
 This includes pytest and coverage tools.
@@ -45,7 +60,7 @@ This includes pytest and coverage tools.
 ### Basic Usage
 
 ```bash
-python -m xml_validator <SCHEMA_FOLDER> <SUBMISSION_FILE>
+python xml_validator.py <schema_folder> <submission_file>
 ```
 
 ### Examples
@@ -53,96 +68,110 @@ python -m xml_validator <SCHEMA_FOLDER> <SUBMISSION_FILE>
 #### Validate an FSA029 submission:
 
 ```bash
-python -m xml_validator ./schemas/fsa029/ ./samples/FSA029-Sample-Valid.xml
+python xml_validator.py ./schemas/fsa029/ ./samples/FSA029-Sample-Valid.xml
 ```
 
-#### Display schema information:
-
-```bash
-python -m xml_validator ./schemas/fsa029/ ./samples/FSA029-Sample-Valid.xml --schema-info
+##### Expected Output
+**For valid XML**:
 ```
-
-#### Using the installed command:
-
-```bash
-xml-validator ./schemas/fsa029/ ./samples/FSA029-Sample-Valid.xml
+Submitted file (./samples/FSA029-Sample-Valid.xml) is VALID
+```
+**For invalid XML**:
+```
+Submitted file (./samples/FSA029-Sample-Full.xml) is INVALID
+```
+**For errors**:
+```
+Error during validation: [specific error message]
 ```
 
 ### Command Line Arguments
 
-- `SCHEMA_FOLDER`: Path to folder containing FSA029-Schema.xsd and CommonTypes-Schema.xsd files
-- `SUBMISSION_FILE`: Path to FSA029 XML submission file to validate
-- `--schema-info`: Display detailed information about the schema files (optional)
-- `--version`: Show version information
-- `--help`: Show help message
-
-### Success Output
-
-When validation succeeds:
-```
-./samples/FSA029-Sample-Valid.xml is VALID
-```
-
-### Error Output
-
-When validation fails:
-```
-RuntimeError: Validation failed for samples/FSA029-Sample-Full.xml:
-  - samples/FSA029-Sample-Full.xml:102:0:ERROR:SCHEMASV:SCHEMAV_ELEMENT_CONTENT: Element '{urn:fsa-gov-uk:MER:FSA029:4}PartnershipsSoleTraders': This element is not expected.```
-```
+- `<schema_folder>`: Path to folder containing FSA029-Schema.xsd and CommonTypes-Schema.xsd files
+- `<submission_file>`: Path to FSA029 XML submission file to validate
 
 ## Project Structure
 
 ```
 xml_validator/
-├── src/
-│   └── xml_validator/
-│       ├── __init__.py          # Package initialization
-│       ├── __main__.py          # Main entry point
-│       ├── cli.py               # Command line interface
-│       └── schema.py            # Schema validation logic
+├── xml_validator.py            # Main validation script (< 100 lines)
 ├── schemas/
 │   └── fsa029/
 │       ├── FSA029-Schema.xsd    # Main FSA029 schema
-│       └── CommonTypes-Schema.xsd # Common types dependency
+│       └── CommonTypes-Schema.xsd # Common types dependency  
 ├── samples/
 │   ├── FSA029-Sample-Valid.xml  # Valid sample submission
 │   └── FSA029-Sample-Full.xml   # Invalid sample (for testing)
-├── tests/                       # Test suite
-│   ├── test_cli.py              # CLI tests
-│   ├── test_main.py             # Main tests
-│   └── test_schema.py           # Schema tests
-├── pyproject.toml              # Project configuration
+├── test.py                     # Comprehensive test suite (optional)
 └── README.md                   # This file
 ```
 
-## Development
+## Design Principles
+This simplified implementation follows key principles:
 
-### Running Tests
+- **Minimalism**: Core functionality in under 100 lines
+- **Clarity**: Self-documenting code with clear function names
+- **Robustness**: Proper error handling and cleanup
+- **Efficiency**: Minimal dependencies (only lxml required)
+- **Standards Compliance**: Meets all brief requirements without over-engineering
 
+## How It Works
+
+1. **Input Validation**: Verifies schema folder and XML file exist and are correct types
+2. **Schema Processing**: Creates temporary copies of all .xsd files in the schema folder
+3. **Import Path Fixing**: Uses regex patterns to fix problematic import paths (e.g., ../../CommonTypes/v14/ becomes local references)
+4. **Schema Loading**: Loads the main FSA029 schema with fixed dependencies
+5. **XML Validation**: Validates the submission XML against the loaded schema
+6. **Cleanup**: Automatically removes temporary files regardless of success/failure
+
+## Development and Testing
+
+### Code Structure
+The main script contains these key functions:
+
+- `validate_inputs()`: Validates file/folder existence and types
+- `fix_schema_imports()`: Programmatically fixes import paths using regex
+- `create_temp_schemas()`: Creates temporary schemas with fixed imports
+- `find_main_schema()`: Locates FSA029 schema file by name matching
+- `validate_xml()`: Performs the actual XML validation with cleanup
+
+### Running Tests (Optional)
+A comprehensive test suite is available in test.py:
 ```bash
-# Run all tests
-pytest
+# Install required dependencies (if not already installed)
+pip install pytest pytest-cov
+
+# Run tests
+pytest test.py -v
 
 # Run with coverage
-pytest --cov=xml_validator
-
-# Run specific test file
-pytest tests/test_schema.py
+pytest test.py -v --cov=xml_validator
 ```
 
 ## Development Notes
 
-## Scope and Implementation
-This implementation may have gone beyond the strict requirements of the brief. This was intentional to demonstrate a broader range of technical skills relevant to the position, including:
+### Iterative Development Process
+This project demonstrates an iterative development approach:
 
-- **Python 3 software development**: Creating a complete, installable Python package
-- **Computer science fundamentals**: Implementing dependency resolution algorithms and tree traversal for schema analysis
-- **Problem-solving and troubleshooting**: Designing solutions for complex XML schema import path issues
-- **Full application lifecycle**: Writing, testing, and creating deployable software with proper documentation
-- **XML expertise**: Deep work with XML Schema validation, namespaces, and dependency management
-- **Test-driven development**: Comprehensive test suite with pytest and coverage reporting
-- **Developer collaborative tools**: Proper Git repository structure and development practices
+1. **Initial implementation**: Comprehensive, feature-rich solution with extensive testing and package structure
+2. **Feedback integration**: Streamlined based on length and complexity feedback
+3. **Final solution**: Focused, efficient implementation meeting core requirements
+
+### Schema Requirements Compliance
+This validator meets all requirements specified in the brief:
+
+1. **Schema Folder Input**: Takes FSA029 schema folder as input parameter
+2. **Submission File Input**: Takes path to FSA029 submission file as input parameter
+3. **Dependency Co-location**: CommonTypes schema must be in same folder as FSA029 schema
+4. **Path Restrictions**: Forbidden /CommonTypes/v14/ paths are programmatically fixed
+5. **Schema Preservation**: Original schema files remain completely unmodified
+6. **Programmatic Import Fixing**: Schema import paths are fixed in memory using temporary files
+
+## Performance and Efficiency
+- **Memory usage**: Temporary files are cleaned up automatically
+- **Processing speed**: Minimal overhead with direct lxml validation
+- **File handling**: Efficient regex-based import path fixing
+- **Error recovery**: Graceful handling of edge cases and cleanup on exceptions
 
 ## AI Assistance
 AI tools were used to assist with this project, primarily for:
@@ -151,17 +180,6 @@ AI tools were used to assist with this project, primarily for:
 - Assistance with writing comprehensive test cases (as I have less experience with pytest)
 
 The core logic, architecture decisions, and problem-solving approach remain original work.
-
-## Schema Requirements Compliance
-
-This validator meets all requirements specified in the brief:
-
-1. ✅ **Schema Folder Input**: Takes FSA029 schema folder as input
-2. ✅ **Submission File Input**: Takes path to FSA029 submission file
-3. ✅ **Dependency Co-location**: CommonTypes schema must be in same folder as FSA029 schema
-4. ✅ **Path Restrictions**: Forbidden `/CommonTypes/v14/` paths are programmatically fixed
-5. ✅ **Schema Preservation**: Original schema files remain unmodified
-6. ✅ **Programmatic Import Fixing**: Schema import paths are fixed in memory using temporary files
 
 ## Analysis of FSA029-Sample-Full.xml
 
@@ -193,7 +211,31 @@ Probably to test that validation tools actually work and catch errors. It's a go
 
 ### Common Issues
 
-1. **"No .xsd files found"**: Ensure schema folder contains FSA029-Schema.xsd and CommonTypes-Schema.xsd
-2. **"Schema folder not found"**: Check that the path to schema folder is correct
-3. **"Submission file not found"**: Verify the XML file path is correct and file exists
-4. **Import/dependency errors**: Ensure CommonTypes-Schema.xsd is in the same folder as FSA029-Schema.xsd
+1. **"Paths provided do not lead to valid file types (xsd, xml)"**:
+    - Ensure schema folder exists and contains .xsd files
+    - Verify XML submission file exists and is readable
+
+2. **Import/dependency errors**:
+    - Verify CommonTypes-Schema.xsd is in the same folder as FSA029-Schema.xsd
+    - Original import paths in schemas will be fixed automatically
+
+3. **"Error during validation: [error message]"**:
+    - Check that XML file is well-formed
+    - Ensure all required dependencies are installed (pip install lxml)
+    - Verify schema files are valid XSD format
+
+4. **Permission errors**:
+    - Ensure read access to schema folder and XML file
+    - Verify write access for temporary file creation
+
+## Version History
+- **v2.0 (Current)**: Simplified, focused implementation based on feedback
+    - Single file solution under 100 lines
+    - Core functionality preserved
+    - Improved efficiency and clarity
+    - Maintained professional error handling
+- **v1.0**: Full-featured package implementation
+    - Comprehensive CLI and testing
+    - Advanced dependency resolution
+    - Complete package structure
+    - Extensive documentation
