@@ -3,6 +3,7 @@ FSA029 XML Schema Validator - Simplified Version
 Usage: python xml_validator.py <schema_folder> <submission_file>
 """
 import re
+import shutil
 import sys
 import tempfile
 from lxml import etree
@@ -12,10 +13,14 @@ from pathlib import Path
 def validate_xml(schema_dir: Path, submitted_file: Path) -> None:
     """Validate XML submission against schema."""
     try:
-        validation = validate_inputs(schema_dir, submitted_file)
-        if all(validation.values()):
+        temp_folder = None
+        if validate_inputs(schema_dir, submitted_file):
             temp_folder = create_temp_schemas(schema_dir)
             main_schema = find_main_schema(temp_folder)
+
+            if main_schema is None:
+                print("Error: FSA029 schema not in the provided directory")
+                return
 
             with open(main_schema, 'r', encoding="utf-8") as file:
                 schema = etree.XMLSchema(etree.parse(file))
@@ -24,22 +29,18 @@ def validate_xml(schema_dir: Path, submitted_file: Path) -> None:
             result = "VALID" if schema.validate(submission) else "INVALID"
 
             print(f"Submitted file ({submitted_file}) is {result}")
-    except OSError:
-        print("Paths provided do not lead to valid file types (.xsd, .xml)")
+        else:
+            print("Paths provided do not lead to valid file types (xsd, xml)")
+    finally:
+        if temp_folder and temp_folder.exists():
+            shutil.rmtree(temp_folder, ignore_errors=True)
 
 
-def validate_inputs(schema_dir: Path, submitted_file: Path) -> dict[str, bool]:
+def validate_inputs(schema_dir: Path, submitted_file: Path) -> bool:
     """Validate input paths exist and are correct types."""
-    return {
-        "folder": {
-            "exists": schema_dir.exists(),
-            "is_folder": schema_dir.is_dir(),
-        },
-        "file": {
-            "exists": submitted_file.exists(),
-            "is_file": submitted_file.is_file(),
-        }
-    }
+    dir_is_valid = schema_dir.exists() and schema_dir.is_dir()
+    file_is_valid = submitted_file.exists() and submitted_file.is_file()
+    return dir_is_valid and file_is_valid
 
 
 def create_temp_schemas(schema_dir: Path) -> Path:
@@ -49,9 +50,7 @@ def create_temp_schemas(schema_dir: Path) -> Path:
 
     for file in files:
         with open(file, 'r', encoding="utf-8") as schema:
-            content = schema.read()
-
-        fixed_content = fix_schema_imports(content)
+            fixed_content = fix_schema_imports(schema.read())
 
         temp_file = temp_folder / file.name
         with open(temp_file, 'w', encoding="utf-8") as temp_schema:
